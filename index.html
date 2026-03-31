@@ -1,0 +1,585 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SourcingPro</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="html2pdf.bundle.min.js"></script>
+
+
+  
+  <!-- PWA & Mobile Meta Tags -->
+  <meta name="theme-color" content="#0f172a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/1155/1155122.png">
+
+</head>
+<body>
+  <!-- Login Screen -->
+  <div id="login-screen" class="login-screen">
+    <div class="login-card">
+      <div class="login-logo">
+        <i data-lucide="shield-check" style="width: 48px; height: 48px;"></i>
+      </div>
+      
+      <div id="password-view">
+        <h2>SourcingPro</h2>
+        <p>Área exclusiva para Compradores</p>
+        
+        <div class="login-form-group">
+          <label>Senha de Acesso</label>
+          <input type="password" id="login-password" placeholder="Digite sua senha...">
+        </div>
+        
+        <button class="login-btn" id="login-submit-btn">ENTRAR NO SISTEMA</button>
+        
+        <button class="toggle-login-mode" id="to-pattern-btn">
+          <i data-lucide="key-round" style="width:14px;"></i> Usar Porta Desenha (Padrão)
+        </button>
+      </div>
+
+      <div id="pattern-view" style="display: none;">
+        <h2>SourcingPro - Porta Desenha</h2>
+        <p>Conduza o percurso de segurança</p>
+        
+        <div class="pattern-lock" id="pattern-lock-container">
+          <div class="dot-wrapper"><div class="dot" data-index="0"></div></div>
+          <div class="dot-wrapper"><div class="dot" data-index="1"></div></div>
+          <div class="dot-wrapper"><div class="dot" data-index="2"></div></div>
+          <div class="dot-wrapper"><div class="dot" data-index="3"></div></div>
+          <div class="dot-wrapper"><div class="dot" data-index="4"></div></div>
+          <div class="dot-wrapper"><div class="dot" data-index="5"></div></div>
+          <div class="dot-wrapper"><div class="dot" data-index="6"></div></div>
+          <div class="dot-wrapper"><div class="dot" data-index="7"></div></div>
+          <div class="dot-wrapper"><div class="dot" data-index="8"></div></div>
+        </div>
+
+        <button class="toggle-login-mode" id="to-password-btn">
+          Voltar para Senha
+        </button>
+      </div>
+      
+      <p style="margin-top: 2rem; font-size: 0.7rem;">© 2026 SourcingPro v2.0</p>
+    </div>
+  </div>
+
+  <div class="app-container" style="display: none;">
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar">
+      <div class="logo">
+        <i data-lucide="shield-check"></i>
+        <span>SourcingPro</span>
+      </div>
+      <ul class="nav-links">
+        <li class="active" data-tab="calculator-tab"><i data-lucide="calculator"></i>Calculadora</li>
+        <li data-tab="comparison-tab"><i data-lucide="layers"></i>Comparativo <span class="badge-mini">PRO</span></li>
+        <li data-tab="installments-tab"><i data-lucide="credit-card"></i>Pagamento Parcelado</li>
+        <li data-tab="charts-tab"><i data-lucide="bar-chart-2"></i>Análise Visual</li>
+        <li data-tab="glossary-tab"><i data-lucide="help-circle"></i>Siglas & Conceitos</li>
+        <li data-tab="history-tab"><i data-lucide="trending-up"></i>Histórico</li>
+
+
+      </ul>
+      <div style="margin-top: auto; padding: 1rem; font-size: 0.7rem; color: #475569;">
+        SourcingPro v2.0
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Calculator Tab -->
+      <div id="calculator-tab" class="tab-pane active">
+        <h1>Análise de Prazos</h1>
+      <p class="subtitle">Simulação estratégica de valor presente e economia de capital.</p>
+
+      <div class="card inputs-card">
+        <div class="form-group full-width">
+          <label>Valor da Transação (R$)</label>
+          <input type="number" id="purchase-value" value="10000" step="0.01">
+        </div>
+        
+        <div class="form-group">
+          <label>Prazo Atual (Dias)</label>
+          <input type="number" id="current-term" value="30">
+        </div>
+        
+        <div class="form-group">
+          <label>Novo Prazo (Dias)</label>
+          <input type="number" id="new-term" value="120">
+        </div>
+        
+        <div class="form-group full-width">
+          <label>Taxa de Juros Mensal (%)</label>
+          <input type="number" id="interest-rate" value="1.15" step="0.01">
+        </div>
+
+        
+        <div style="display: flex; gap: 1rem;">
+          <button class="btn-calculate" id="calculate-btn" style="flex: 2;">CALCULAR GANHO FINANCEIRO</button>
+          <button class="btn-secondary-outline" id="save-calc-btn" style="flex: 1; border-color: #10b981; color: #10b981;">
+            <i data-lucide="save" style="width: 18px; vertical-align: middle;"></i> SALVAR
+          </button>
+        </div>
+
+      </div>
+
+
+      <div class="results-grid">
+        <div class="result-box">
+          <div class="result-label">VP Prazo Atual</div>
+          <div class="result-value" id="res-pv-current">-</div>
+        </div>
+        <div class="result-box">
+          <div class="result-label">VP Novo Prazo</div>
+          <div class="result-value" id="res-pv-new">-</div>
+        </div>
+        <div class="result-box">
+          <div class="result-label">Economia Gerada</div>
+          <div class="result-value text-success" id="res-diff">-</div>
+        </div>
+        <div class="result-box">
+          <div class="result-label">Eficácia (%)</div>
+          <div class="result-value text-info" id="res-gain-pct">-</div>
+        </div>
+      </div>
+
+        <div class="card" style="margin-top: 1.5rem;">
+          <h3 style="font-size: 1rem; margin-bottom: 1rem; color: var(--text-main);">
+            <i data-lucide="briefcase" style="width: 18px; vertical-align: middle;"></i> 
+            Resumo Estratégico
+          </h3>
+          <p id="summary-text" class="info-text">Aguardando cálculo...</p>
+          <p id="sourcing-text" class="info-text" style="margin-top: 1rem;"></p>
+        </div>
+
+        <!-- Negotiation Script Generator -->
+        <div class="card script-card" style="margin-top: 1.5rem; border-left: 4px solid var(--primary);">
+          <h3 style="font-size: 0.9rem; color: var(--primary); margin-bottom: 0.75rem;">
+            <i data-lucide="message-square" style="width: 16px; vertical-align: middle;"></i> 
+            Script de Negociação Sugerido
+          </h3>
+          <div id="negotiation-script" class="info-text italic" style="background: rgba(0,0,0,0.1); padding: 1rem; border-radius: 8px;">
+            Realize o cálculo para gerar argumentos.
+          </div>
+          <button class="btn-secondary-outline" id="copy-script-btn" style="margin-top: 0.75rem; width: auto; padding: 0.5rem 1rem;">COPIAR ARGUMENTO</button>
+        </div>
+      </div>
+
+      <!-- Comparison Tab -->
+      <div id="comparison-tab" class="tab-pane">
+        <h1>Comparativo de Cenários</h1>
+        <p class="subtitle">Analise até 3 propostas de prazos simultaneamente.</p>
+        
+        <div class="comparison-grid">
+          <!-- Baseline Scenario (Proposta 1) -->
+          <div class="card scenario-card active">
+            <div class="scenario-header">PROPOSTA A (Base)</div>
+            <div class="form-group"><label>Valor (R$)</label><input type="number" id="comp-v1" value="10000"></div>
+            <div class="form-group"><label>Prazo (Dias)</label><input type="number" id="comp-d1" value="30"></div>
+            <div class="scenario-result">
+              <div style="font-size: 0.75rem; opacity: 0.7;">Bruto NF: <span id="comp-bruto-v1">-</span></div>
+              <div style="margin-top: 0.25rem;">VP Líquido: <strong id="comp-res-pv1">-</strong></div>
+            </div>
+
+
+          </div>
+
+          <!-- Scenario 2 -->
+          <div class="card scenario-card">
+            <div class="scenario-header">PROPOSTA B</div>
+            <div class="form-group"><label>Valor (R$)</label><input type="number" id="comp-v2" value="10000"></div>
+            <div class="form-group"><label>Prazo (Dias)</label><input type="number" id="comp-d2" value="60"></div>
+            <div class="scenario-result">
+              <div style="font-size: 0.75rem; opacity: 0.7;">Bruto NF: <span id="comp-bruto-v2">-</span></div>
+              <div style="margin-top: 0.25rem;">VP Líquido: <strong id="comp-res-pv2">-</strong></div>
+              <div style="font-size: 0.75rem; margin-top: 0.4rem; padding-top: 0.4rem; border-top: 1px dashed var(--glass-border); color: #64748b;">
+                Economia Real: <span id="comp-diff-v2" style="font-weight: 700; color: #10b981;">-</span> 
+                (<span id="comp-diff-p2" style="font-weight: 700; color: #10b981;">-</span>)
+              </div>
+            </div>
+
+
+          </div>
+
+          <!-- Scenario 3 -->
+          <div class="card scenario-card">
+            <div class="scenario-header">PROPOSTA C</div>
+            <div class="form-group"><label>Valor (R$)</label><input type="number" id="comp-v3" value="10000"></div>
+            <div class="form-group"><label>Prazo (Dias)</label><input type="number" id="comp-d3" value="120"></div>
+            <div class="scenario-result">
+              <div style="font-size: 0.75rem; opacity: 0.7;">Bruto NF: <span id="comp-bruto-v3">-</span></div>
+              <div style="margin-top: 0.25rem;">VP Líquido: <strong id="comp-res-pv3">-</strong></div>
+              <div style="font-size: 0.75rem; margin-top: 0.4rem; padding-top: 0.4rem; border-top: 1px dashed var(--glass-border); color: #64748b;">
+                Economia Real: <span id="comp-diff-v3" style="font-weight: 700; color: #10b981;">-</span> 
+                (<span id="comp-diff-p3" style="font-weight: 700; color: #10b981;">-</span>)
+              </div>
+            </div>
+
+
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 1rem; margin-bottom: 2rem;">
+          <button class="btn-calculate" id="compare-btn" style="flex: 2; margin-bottom: 0;">COMPARAR CENÁRIOS</button>
+          <button class="btn-secondary-outline" id="save-comp-btn" style="flex: 1; border-color: #10b981; color: #10b981; margin-bottom: 0;">
+            <i data-lucide="save" style="width: 18px; vertical-align: middle;"></i> SALVAR
+          </button>
+        </div>
+
+
+        <div class="card best-option-card" id="best-option-banner" style="display: none;">
+          <div style="display: flex; align-items: center; gap: 1rem;">
+            <div class="icon-circle success"><i data-lucide="check-circle-2"></i></div>
+            <div>
+              <h3 id="best-option-title">Melhor Opção de Fluxo</h3>
+              <p id="best-option-desc">Cenário com menor Valor Presente detectado.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- Installments Tab -->
+      <div id="installments-tab" class="tab-pane">
+        <h1>Simulação de Parcelamento</h1>
+        <p class="subtitle">Calcule o valor presente de compras parceladas em séries mensais.</p>
+        
+        <div class="card inputs-card">
+          <div class="form-group full-width">
+            <label>Valor Total da Compra (R$)</label>
+            <input type="number" id="inst-value" value="12000" step="0.01">
+          </div>
+          
+          <div class="form-group">
+            <label>Número de Parcelas</label>
+            <input type="number" id="inst-count" value="12">
+          </div>
+          
+          <div class="form-group">
+            <label>Taxa de Juros Mensal (%)</label>
+            <input type="number" id="inst-rate" value="1.15" step="0.01">
+          </div>
+          
+          <div class="form-group full-width">
+            <label>Carência para 1ª Parcela (Dias)</label>
+            <input type="number" id="inst-delay" value="30">
+          </div>
+          
+          <button class="btn-calculate" id="inst-calculate-btn">CALCULAR VALOR PRESENTE PARCELADO</button>
+        </div>
+
+        <div class="results-grid">
+          <div class="result-box">
+            <div class="result-label">Valor da Parcela</div>
+            <div class="result-value" id="res-inst-pmt">-</div>
+          </div>
+          <div class="result-box">
+            <div class="result-label">Valor Presente Total (VP)</div>
+            <div class="result-value text-success" id="res-inst-pv-total">-</div>
+          </div>
+          <div class="result-box">
+            <div class="result-label">Custo Nominal Total</div>
+            <div class="result-value" id="res-inst-nominal">-</div>
+          </div>
+          <div class="result-box">
+            <div class="result-label">Diferença Financeira</div>
+            <div class="result-value text-info" id="res-inst-diff">-</div>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top: 1.5rem;">
+          <h3 style="font-size: 1rem; margin-bottom: 1rem; color: var(--text-main);">
+            <i data-lucide="info" style="width: 18px; vertical-align: middle;"></i> 
+            Análise do Fluxo de Parcelamento
+          </h3>
+          <p id="inst-summary-text" class="info-text">Realize o cálculo para ver a análise estratégica do parcelamento.</p>
+        </div>
+
+        <!-- Installment Schedule Table -->
+        <div class="card" id="inst-schedule-container" style="display: none; margin-top: 1.5rem;">
+          <h3 style="font-size: 1rem; margin-bottom: 1rem; color: var(--text-main);">
+            <i data-lucide="list" style="width: 18px; vertical-align: middle;"></i> 
+            Cronograma de Desembolso
+          </h3>
+          <div style="overflow-x: auto;">
+            <table style="width: 100%; border-collapse: collapse; font-size: 0.85rem;">
+              <thead>
+                <tr style="border-bottom: 1px solid var(--glass-border); text-align: left; color: var(--text-muted);">
+                  <th style="padding: 0.75rem 0.5rem;">Parcela</th>
+                  <th style="padding: 0.75rem 0.5rem;">Prazo (Dias)</th>
+                  <th style="padding: 0.75rem 0.5rem;">Valor Nominal</th>
+                  <th style="padding: 0.75rem 0.5rem;">Valor Presente (VP)</th>
+                </tr>
+              </thead>
+              <tbody id="inst-schedule-body">
+                <!-- Populated by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+
+      <!-- Charts Tab -->
+      <div id="charts-tab" class="tab-pane">
+        <h1 style="font-size: 1.5rem; margin-bottom: 0.25rem;">Análise Estratégica</h1>
+        <p class="subtitle" style="margin-bottom: 1.5rem;">Representação visual compacta do potencial de negociação.</p>
+        
+        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1rem;">
+          <div class="card" style="padding: 1rem; height: 260px;">
+            <h3 style="font-size: 0.75rem; letter-spacing: 0.05em; margin-bottom: 0.75rem;">COMPARAÇÃO VP</h3>
+            <div style="height: 180px;"><canvas id="pvComparisonChart"></canvas></div>
+          </div>
+          <div class="card" style="padding: 1rem; height: 260px;">
+            <h3 style="font-size: 0.75rem; letter-spacing: 0.05em; margin-bottom: 0.75rem;">EFICIÊNCIA (%)</h3>
+            <div style="height: 180px;"><canvas id="economyPieChart"></canvas></div>
+          </div>
+          <div class="card" style="padding: 1rem; height: 260px;">
+            <h3 style="font-size: 0.75rem; letter-spacing: 0.05em; margin-bottom: 0.75rem;">CURVA DE VALOR</h3>
+            <div style="height: 180px;"><canvas id="sensitivityChart"></canvas></div>
+          </div>
+        </div>
+        
+        <div class="card" style="background: rgba(99, 102, 241, 0.05); border-color: rgba(99, 102, 241, 0.2); padding: 1rem;">
+          <div style="display: flex; align-items: center; gap: 1rem;">
+            <div style="background: var(--primary); width: 40px; height: 40px; border-radius: 12px; display: flex; align-items: center; justify-content: center;">
+              <i data-lucide="zap" style="color: white; width: 20px;"></i>
+            </div>
+            <div>
+              <h4 style="font-size: 0.85rem; color: var(--text-main);">Insight de Negociação</h4>
+              <p style="font-size: 0.75rem; color: var(--text-muted);">A curva de valor indica que cada 30 dias adicionais representam um ganho implícito médio de 1,15% sobre o custo nominal do contrato.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Glossary Tab -->
+      <div id="glossary-tab" class="tab-pane">
+        <h1>Siglas e Conceitos Financeiros</h1>
+        <p class="subtitle">Entenda os termos técnicos fundamentais de Supply Chain e Finanças Corporativas (Base BACEN 2026).</p>
+        
+        <div class="card">
+          <div class="analysis-content">
+            <div class="analysis-item" style="border-bottom: 1px solid var(--glass-border); padding-bottom: 1.5rem; margin-bottom: 1.5rem;">
+              <h4 style="color: var(--primary); font-size: 1.1rem; margin-bottom: 0.5rem;"><i data-lucide="activity" style="width:16px;"></i> Fluxo de Caixa (Cash Flow)</h4>
+              <p>O fluxo de caixa representa as entradas e saídas de dinheiro em um período. No processo de sourcing, o impacto principal é a <b>preservação da liquidez</b>: ao estender prazos, a empresa mantém recursos disponíveis por mais tempo, reduzindo a necessidade de captação externa e melhorando a saúde financeira global.</p>
+            </div>
+
+            <div class="analysis-item" style="border-bottom: 1px solid var(--glass-border); padding-bottom: 1.5rem; margin-bottom: 1.5rem;">
+              <h4 style="color: var(--accent-blue); font-size: 1.1rem; margin-bottom: 0.5rem;"><i data-lucide="percent" style="width:16px;"></i> CDI / SELIC (Atualmente 1,15% a.m.)</h4>
+              <p>Valor oficial divulgado pelo Banco Central em **Março de 2026**. Representa o rendimento de aplicações conservadoras. Use para simular "dinheiro parado" que deixa de render. Corresponde a 14,75% a.a.</p>
+            </div>
+
+            <div class="analysis-item" style="border-bottom: 1px solid var(--glass-border); padding-bottom: 1.5rem; margin-bottom: 1.5rem;">
+              <h4 style="color: var(--accent-green); font-size: 1.1rem; margin-bottom: 0.5rem;"><i data-lucide="bar-chart-2" style="width:16px;"></i> WACC (Custo Médio Ponderado de Capital)</h4>
+              <p>O <b>WACC</b> (Weighted Average Cost of Capital) representa o custo médio que a empresa paga para financiar suas operações, seja através de capital próprio ou de terceiros. No SourcingPro, é adotado automaticamente como taxa de desconto (1,43% a.m. ou 18,5% a.a.) para projetos estratégicos acima de <b>R$ 200 mil</b>, onde o custo de oportunidade do capital é mais sensível.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- History Tab -->
+      <div id="history-tab" class="tab-pane">
+        <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 2rem;">
+          <div>
+            <h1>Histórico de Negociações</h1>
+            <p class="subtitle">Métricas e histórico consolidado de todas as simulações realizadas.</p>
+          </div>
+          <div class="card" style="padding: 1rem; flex: 1; max-width: 300px; margin-left: 2rem; display: flex; align-items: center; justify-content: space-between;">
+             <div>
+               <h3 style="font-size: 0.75rem; color: var(--text-muted); margin-bottom: 0.5rem;">ECONOMIA TOTAL ACUMULADA</h3>
+               <div id="total-savings-metric" style="font-size: 1.5rem; font-weight: 800; color: #10b981;">R$ 0,00</div>
+             </div>
+              <div style="display: flex; gap: 0.75rem;">
+
+                <button id="clear-history-btn" class="btn-secondary-outline" style="border-color: #f87171; color: #f87171; padding: 0.5rem 1rem;">
+                  <i data-lucide="trash-2" style="width: 16px;"></i> LIMPAR
+                </button>
+              </div>
+
+          </div>
+        </div>
+
+
+        <div class="card" style="overflow-x: auto;">
+          <table style="width: 100%; border-collapse: collapse; text-align: left;">
+            <thead>
+              <tr style="border-bottom: 1px solid var(--glass-border); color: #94a3b8; font-size: 0.85rem;">
+                <th style="padding: 1rem;">Data/Hora</th>
+                <th style="padding: 1rem;">Valor Nominal</th>
+                <th style="padding: 1rem;">Prazos (Atual/Novo)</th>
+                <th style="padding: 1rem;">Economia</th>
+                <th style="padding: 1rem;">Eficácia</th>
+              </tr>
+            </thead>
+            <tbody id="history-table-body">
+              <tr>
+                <td colspan="5" style="padding: 2rem; text-align: center; color: #64748b;">Nenhum histórico encontrado.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="card" style="margin-top: 2rem; border-top: 2px dashed var(--glass-border); background: rgba(248, 113, 113, 0.03); display: flex; justify-content: space-between; align-items: center; padding: 1.5rem;">
+          <div>
+            <h3 style="margin: 0; font-size: 1rem; color: #1e293b;"><i data-lucide="shield-alert" style="width: 18px; vertical-align: middle;"></i> Gestão de Dados</h3>
+            <p style="margin: 0.25rem 0 0; font-size: 0.75rem; color: #64748b;">Limpar permanentemente as simulações salvas localmente.</p>
+          </div>
+          <div style="display: flex; gap: 0.75rem;">
+
+            <button id="clear-history-btn-footer" class="btn-secondary-outline" style="border-color: #f87171; color: #f87171; padding: 0.6rem 1.2rem;">
+              <i data-lucide="trash-2" style="width: 18px;"></i> APAGAR TUDO
+            </button>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top: 1.5rem; text-align: center; background: rgba(0, 0, 0, 0.05); border-color: transparent;">
+          <div style="font-size: 0.75rem; color: var(--text-muted);">
+            SourcingPro v2.0 - Compilação Especial<br>
+            Licença Exclusiva: <b>Fabiana Castro</b>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+    <!-- Info Panels Sidebar (Right Side) -->
+    <aside class="info-sidebar">
+      
+      <!-- Calculation Info Panel -->
+      <div class="info-panel">
+        <h3><i data-lucide="help-circle"></i>Como calculamos?</h3>
+        <div class="info-text">
+          O cálculo baseia-se no valor do dinheiro no tempo através do <b>Valor Presente (VP)</b>:
+          <div class="formula-box">VP = FV / (1 + i) ^ (d/30)</div>
+          A "Economia" é a diferença entre o VP do prazo atual e o VP do novo prazo. 
+          <br><br>
+          <b>Exemplo:</b> Se você estica o prazo, o dinheiro "vale menos" no futuro para o fornecedor, significando que ele permanece trabalhando no SEU caixa.
+        </div>
+      </div>
+
+      <!-- Interest Indices Info Panel -->
+      <div class="info-panel">
+        <h3><i data-lucide="percent"></i>Guia de Juros (BACEN 2026)</h3>
+        <div class="info-text">
+          <div style="margin-bottom: 1.25rem;">
+            <span class="tag-sm" style="background: var(--accent-blue); color: white;">CDI / SELIC: 1,15% a.m.</span><br>
+            <b>O que é?</b> Rendimento do dinheiro no banco (14,75% a.a.).<br>
+            <b>Quando usar:</b> Se a sua empresa <b>tem dinheiro sobrando</b>.
+          </div>
+          <div style="margin-bottom: 1.25rem;">
+            <span class="tag-sm" style="background: var(--accent-green); color: white;">WACC: 1,43% a.m.</span><br>
+            <b>O que é?</b> Custo de conseguir dinheiro (em média 18,5% a.a.).<br>
+            <b>Quando usar:</b> Se o <b>caixa está apertado</b>.
+          </div>
+          <div style="margin-top: 0.5rem; border-top: 1px solid var(--glass-border); padding-top: 1rem; font-style: italic;">
+            <i>Taxas atualizadas conforme COPOM de Março/2026.</i>
+          </div>
+        </div>
+      </div>
+
+    </aside>
+  </div>
+
+  <div id="report-view" class="report-view" style="display: none;">
+    <!-- Report Header with RD Saúde Branding -->
+    <div class="report-header" style="border-bottom: 3px solid #0f172a; padding-bottom: 1.5rem; margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: start;">
+      <div>
+        <h1 style="font-size: 2.2rem; font-weight: 800; margin: 0; line-height: 1.1;">
+          <span style="color: #0ea5e9;">SourcingPro</span> 
+          <span style="color: #94a3b8; margin: 0 0.5rem; font-weight: 300;">&</span> 
+          <span style="color: #10b981;">RD Saúde</span>
+        </h1>
+        <p style="color: #64748b; font-size: 0.9rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; margin-top: 0.5rem;">Resultado negociação condição de pagamento</p>
+      </div>
+      <div style="text-align: right;">
+        <div id="report-date" style="color: #64748b; font-size: 0.85rem; font-weight: 500; margin-bottom: 0.25rem;"></div>
+        <div style="font-size: 0.75rem; color: #94a3b8;">Ref: Analista Fabiana Castro</div>
+      </div>
+    </div>
+
+    <!-- Executive Summary Dashboard -->
+    <div class="report-section">
+      <h2 style="font-size: 1rem; color: #0f172a; margin-bottom: 1.5rem; text-transform: uppercase; letter-spacing: 0.05em; border-left: 4px solid #0ea5e9; padding-left: 0.75rem;">1. Sumário Executivo</h2>
+      
+      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 2rem;">
+        <div class="report-box" style="border-top: 4px solid #10b981;">
+          <span class="report-label">Economia Gerada</span>
+          <div id="report-economy" class="report-val" style="color: #10b981;">-</div>
+          <p style="font-size: 0.65rem; color: #64748b; margin-top: 0.5rem;">Ganho financeiro em VP</p>
+        </div>
+        <div class="report-box" style="border-top: 4px solid #0ea5e9;">
+          <span class="report-label">Eficácia (%)</span>
+          <div id="report-efficiency" class="report-val" style="color: #0ea5e9;">-</div>
+          <p style="font-size: 0.65rem; color: #64748b; margin-top: 0.5rem;">Eficiência do capital</p>
+        </div>
+        <div class="report-box" style="border-top: 4px solid #f59e0b;">
+          <span class="report-label">Custo Nominal</span>
+          <div id="report-nominal" class="report-val" style="color: #f59e0b;">-</div>
+          <p style="font-size: 0.65rem; color: #64748b; margin-top: 0.5rem;">Montante total da fatura</p>
+        </div>
+      </div>
+
+      <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 12px; padding: 1.25rem; display: flex; justify-content: space-around; text-align: center;">
+         <div><span style="font-size: 0.7rem; color: #64748b; text-transform: uppercase;">Prazo Anterior</span><div id="report-term-current" style="font-weight: 700; font-size: 1.1rem; color: #1e293b;">-</div></div>
+         <div style="color: #e2e8f0; font-size: 1.5rem;">→</div>
+         <div><span style="font-size: 0.7rem; color: #64748b; text-transform: uppercase;">Novo Prazo</span><div id="report-term-new" style="font-weight: 700; font-size: 1.1rem; color: #0ea5e9;">-</div></div>
+         <div style="color: #e2e8f0; font-size: 1.5rem;">→</div>
+         <div><span style="font-size: 0.7rem; color: #64748b; text-transform: uppercase;">Extensão</span><div id="report-term-gain" style="font-weight: 700; font-size: 1.1rem; color: #10b981;">-</div></div>
+      </div>
+    </div>
+
+    <!-- Insights & Narrative -->
+    <div class="report-section" style="margin-top: 2.5rem;">
+      <h2 style="font-size: 1rem; color: #0f172a; margin-bottom: 1.5rem; text-transform: uppercase; letter-spacing: 0.05em; border-left: 4px solid #818cf8; padding-left: 0.75rem;">2. Parecer e Recomendações</h2>
+      
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1.5rem;">
+        <div class="report-insight-card" style="border-left-color: #818cf8; background: #fafafa;">
+          <h4 style="font-size: 0.8rem; color: #818cf8; margin-bottom: 0.5rem;">ANÁLISE DE IMPACTO</h4>
+          <p id="report-summary-text" style="font-size: 0.85rem; color: #1e293b; line-height: 1.6;"></p>
+        </div>
+        <div class="report-insight-card" style="border-left-color: #10b981; background: #f0fdf4;">
+          <h4 style="font-size: 0.8rem; color: #10b981; margin-bottom: 0.5rem;">DECISÃO SUGERIDA</h4>
+          <p id="report-sourcing-text" style="font-size: 0.85rem; color: #1e293b; font-weight: 600;"></p>
+        </div>
+      </div>
+      
+      <div class="report-insight-card" style="border-left-color: #64748b; background: #f8fafc; border: 1px solid #e2e8f0;">
+        <h4 style="font-size: 0.8rem; color: #64748b; margin-bottom: 0.5rem;">ARGUMENTO DE NEGOCIAÇÃO (CRIPT)</h4>
+        <p id="report-negotiation-script" style="font-size: 0.8rem; color: #475569; font-style: italic; line-height: 1.6;"></p>
+      </div>
+    </div>
+
+    <!-- Footer Signature -->
+
+    <div style="margin-top: 4rem; display: flex; justify-content: space-between; align-items: flex-end;">
+      <div style="width: 45%; border-top: 1px solid #94a3b8; padding-top: 0.5rem; text-align: center;">
+        <span style="font-size: 0.7rem; color: #64748b;">Parecer do Especialista</span><br>
+        <b style="font-size: 0.8rem; color: #1e293b;">Fabiana Castro</b>
+      </div>
+       <div style="width: 45%; border-top: 1px solid #94a3b8; padding-top: 0.5rem; text-align: center;">
+        <span style="font-size: 0.7rem; color: #64748b;">Aprovação Financeira / RD Saúde</span><br>
+        <div style="height: 1.5rem;"></div>
+      </div>
+    </div>
+
+    <div style="margin-top: 2rem; text-align: center; color: #cbd5e1; font-size: 0.65rem;">
+      SourcingPro - Protocolo de Inteligência Financeira v2.0
+    </div>
+  </div>
+
+
+  <script src="script.js"></script>
+
+  <script>
+    lucide.createIcons();
+  </script>
+</body>
+</html>
